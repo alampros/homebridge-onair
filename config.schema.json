@@ -1,0 +1,36 @@
+{
+	"pluginAlias": "OnAir",
+	"pluginType": "platform",
+	"singular": true,
+	"schema": {
+		"type": "object",
+		"properties": {
+			"port": {
+				"title": "Port",
+				"type": "integer",
+				"default": 18440,
+				"description": "WebSocket server listen port"
+			},
+			"occupants": {
+				"title": "Occupants",
+				"type": "array",
+				"items": {
+					"type": "object",
+					"properties": {
+						"id": {
+							"title": "ID",
+							"type": "string",
+							"required": true
+						},
+						"displayName": {
+							"title": "Display Name",
+							"type": "string",
+							"required": true
+						}
+					}
+				}
+			}
+		},
+		"required": ["occupants"]
+	}
+}
