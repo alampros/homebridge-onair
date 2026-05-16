@@ -24,13 +24,15 @@ export class OccupantAccessory {
     this.onCallService =
       accessory.getServiceById(this.platform.Service.OccupancySensor, `oncall-${occupant.id}`) ||
       accessory.addService(this.platform.Service.OccupancySensor, `${occupant.displayName} On Call`, `oncall-${occupant.id}`)
-    this.onCallService.setCharacteristic(this.platform.Characteristic.Name, `${occupant.displayName} On Call`)
+    this.onCallService.addOptionalCharacteristic(this.platform.Characteristic.ConfiguredName)
+    this.onCallService.setCharacteristic(this.platform.Characteristic.ConfiguredName, `${occupant.displayName} On Call`)
 
     // Get or create the "On Air" OccupancySensor service (with subtype for disambiguation)
     this.onAirService =
       accessory.getServiceById(this.platform.Service.OccupancySensor, `onair-${occupant.id}`) ||
       accessory.addService(this.platform.Service.OccupancySensor, `${occupant.displayName} On Air`, `onair-${occupant.id}`)
-    this.onAirService.setCharacteristic(this.platform.Characteristic.Name, `${occupant.displayName} On Air`)
+    this.onAirService.addOptionalCharacteristic(this.platform.Characteristic.ConfiguredName)
+    this.onAirService.setCharacteristic(this.platform.Characteristic.ConfiguredName, `${occupant.displayName} On Air`)
 
     // Initialize both sensors to NOT_DETECTED
     this.clearState()

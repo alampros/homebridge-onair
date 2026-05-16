@@ -8,6 +8,7 @@ const OCCUPANCY_NOT_DETECTED = 0
 
 function createMockService() {
   return {
+    addOptionalCharacteristic: vi.fn(),
     setCharacteristic: vi.fn().mockReturnThis(),
     updateCharacteristic: vi.fn().mockReturnThis(),
   }
@@ -45,6 +46,7 @@ function createMocks(occupantId = 'aaron') {
       Manufacturer: 'Manufacturer',
       Model: 'Model',
       SerialNumber: 'SerialNumber',
+      ConfiguredName: 'ConfiguredName',
       OccupancyDetected,
     },
     log: {
@@ -101,7 +103,10 @@ describe('OccupantAccessory', () => {
 
       // addService should NOT be called since getServiceById found existing services
       expect(mockAccessory.addService).not.toHaveBeenCalled()
-      // But existing services should have updateCharacteristic called (from clearState in constructor)
+      // ConfiguredName should still be set on reused services
+      expect(existingOnCall.setCharacteristic).toHaveBeenCalledWith('ConfiguredName', 'Aaron On Call')
+      expect(existingOnAir.setCharacteristic).toHaveBeenCalledWith('ConfiguredName', 'Aaron On Air')
+      // And existing services should have updateCharacteristic called (from clearState in constructor)
       expect(existingOnCall.updateCharacteristic).toHaveBeenCalled()
       expect(existingOnAir.updateCharacteristic).toHaveBeenCalled()
     })
