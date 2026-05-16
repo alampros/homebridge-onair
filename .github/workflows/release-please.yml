@@ -54,7 +54,11 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           package-manager-cache: false
 
-      - run: corepack enable
+      - name: Activate pinned npm via corepack
+        run: |
+          corepack enable
+          corepack prepare --activate
+          npm --version
       - run: npm ci
       - run: npm publish --access public
 
@@ -74,7 +78,11 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           package-manager-cache: false
 
-      - run: corepack enable
+      - name: Activate pinned npm via corepack
+        run: |
+          corepack enable
+          corepack prepare --activate
+          npm --version
       - run: npm ci
 
       - name: Set dev version
