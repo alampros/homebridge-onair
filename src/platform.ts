@@ -27,6 +27,7 @@ export class OnAirPlatform implements DynamicPlatformPlugin {
     this.log.info('OnAir platform initialized')
 
     this.api.on('didFinishLaunching', () => {
+      this.log.debug('[platform] didFinishLaunching — discovering devices and starting server')
       this.discoverDevices()
       this.wsServer = new OnAirServer(this)
       this.wsServer.start().catch((err) => {
@@ -36,6 +37,7 @@ export class OnAirPlatform implements DynamicPlatformPlugin {
 
     this.api.on('shutdown', () => {
       this.log.info('Shutting down OnAir platform...')
+      this.log.debug('[platform] Clearing %d occupant sensor state(s)', this.occupantAccessories.size)
 
       // Clear all occupant sensor states
       for (const occupantAccessory of this.occupantAccessories.values()) {
@@ -44,6 +46,7 @@ export class OnAirPlatform implements DynamicPlatformPlugin {
 
       // Stop WebSocket server (closes sockets, unadvertises mDNS, clears timers)
       if (this.wsServer) {
+        this.log.debug('[platform] Stopping WebSocket server...')
         this.wsServer.stop().catch((err: Error) => {
           this.log.error('Error during shutdown:', err.message)
         })
@@ -68,6 +71,8 @@ export class OnAirPlatform implements DynamicPlatformPlugin {
   discoverDevices(): void {
     const occupants: Array<{ id: string; displayName: string }> | undefined = this.config.occupants as Array<{ id: string; displayName: string }> | undefined
 
+    this.log.debug('[platform] discoverDevices — %d occupant(s) configured, %d cached accessor(ies)', occupants?.length ?? 0, this.accessories.size)
+
     if (!occupants || occupants.length === 0) {
       this.log.warn('No occupants configured — nothing to discover.')
       return
@@ -79,6 +84,7 @@ export class OnAirPlatform implements DynamicPlatformPlugin {
     for (const occupant of occupants) {
       const uuid = this.api.hap.uuid.generate(occupant.id)
       activeUUIDs.add(uuid)
+      this.log.debug('[platform] Processing occupant "%s" (id=%s, uuid=%s)', occupant.displayName, occupant.id, uuid)
 
       const existingAccessory = this.accessories.get(uuid)
 
@@ -114,6 +120,8 @@ export class OnAirPlatform implements DynamicPlatformPlugin {
    * Used by the WebSocket server in Phase 3.
    */
   getOccupantAccessory(id: string): OccupantAccessory | undefined {
-    return this.occupantAccessories.get(id)
+    const accessory = this.occupantAccessories.get(id)
+    this.log.debug('[platform] getOccupantAccessory("%s") → %s', id, accessory ? accessory.occupant.displayName : 'not found')
+    return accessory
   }
 }

@@ -11,6 +11,8 @@ export class OccupantAccessory {
     readonly accessory: PlatformAccessory,
     readonly occupant: { id: string; displayName: string },
   ) {
+    this.platform.log.debug('[accessory] Initializing occupant "%s" (%s)', occupant.displayName, occupant.id)
+
     // Set accessory information
     accessory
       .getService(this.platform.Service.AccessoryInformation)
@@ -45,12 +47,15 @@ export class OccupantAccessory {
     const { OccupancyDetected } = this.platform.Characteristic
 
     if (!onCall) {
+      this.platform.log.debug('[accessory] "%s" state: not on call → OnCall=NOT_DETECTED, OnAir=NOT_DETECTED', this.occupant.displayName)
       this.onCallService.updateCharacteristic(OccupancyDetected, OccupancyDetected.OCCUPANCY_NOT_DETECTED)
       this.onAirService.updateCharacteristic(OccupancyDetected, OccupancyDetected.OCCUPANCY_NOT_DETECTED)
     } else if (muted) {
+      this.platform.log.debug('[accessory] "%s" state: on call (muted) → OnCall=DETECTED, OnAir=NOT_DETECTED', this.occupant.displayName)
       this.onCallService.updateCharacteristic(OccupancyDetected, OccupancyDetected.OCCUPANCY_DETECTED)
       this.onAirService.updateCharacteristic(OccupancyDetected, OccupancyDetected.OCCUPANCY_NOT_DETECTED)
     } else {
+      this.platform.log.debug('[accessory] "%s" state: on call (unmuted) → OnCall=DETECTED, OnAir=DETECTED', this.occupant.displayName)
       this.onCallService.updateCharacteristic(OccupancyDetected, OccupancyDetected.OCCUPANCY_DETECTED)
       this.onAirService.updateCharacteristic(OccupancyDetected, OccupancyDetected.OCCUPANCY_DETECTED)
     }
@@ -58,6 +63,7 @@ export class OccupantAccessory {
 
   /** Set both sensors to NOT_DETECTED. */
   clearState(): void {
+    this.platform.log.debug('[accessory] "%s" clearing state → OnCall=NOT_DETECTED, OnAir=NOT_DETECTED', this.occupant.displayName)
     const { OccupancyDetected } = this.platform.Characteristic
 
     this.onCallService.updateCharacteristic(OccupancyDetected, OccupancyDetected.OCCUPANCY_NOT_DETECTED)

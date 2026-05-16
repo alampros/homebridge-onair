@@ -47,6 +47,12 @@ function createMocks(occupantId = 'aaron') {
       SerialNumber: 'SerialNumber',
       OccupancyDetected,
     },
+    log: {
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
+    },
   } as unknown as OnAirPlatform
 
   return { mockPlatform, mockAccessory, infoService, onCallService, onAirService, OccupancyDetected }
