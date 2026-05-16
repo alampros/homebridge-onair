@@ -20,6 +20,7 @@ jobs:
         with:
           node-version: '22'
 
+      - run: corepack enable
       - run: npm ci
       - run: npm run build
       - run: npm run lint
@@ -52,6 +53,7 @@ jobs:
           node-version: '22'
           registry-url: 'https://registry.npmjs.org'
 
+      - run: corepack enable
       - run: npm ci
       - run: npm publish --provenance --access public
 
@@ -70,6 +72,7 @@ jobs:
           node-version: '22'
           registry-url: 'https://registry.npmjs.org'
 
+      - run: corepack enable
       - run: npm ci
 
       - name: Set dev version
