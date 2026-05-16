@@ -56,12 +56,8 @@ jobs:
 
       - name: Activate npm version pinned in package.json
         run: |
-          mkdir -p "$RUNNER_TEMP/corepack-shims"
-          corepack enable --install-directory "$RUNNER_TEMP/corepack-shims"
-          echo "$RUNNER_TEMP/corepack-shims" >> "$GITHUB_PATH"
+          corepack enable npm
           corepack prepare --activate
-      - run: |
-          which npm
           npm --version
       - run: npm ci
       - run: npm publish --access public
@@ -84,12 +80,8 @@ jobs:
 
       - name: Activate npm version pinned in package.json
         run: |
-          mkdir -p "$RUNNER_TEMP/corepack-shims"
-          corepack enable --install-directory "$RUNNER_TEMP/corepack-shims"
-          echo "$RUNNER_TEMP/corepack-shims" >> "$GITHUB_PATH"
+          corepack enable npm
           corepack prepare --activate
-      - run: |
-          which npm
           npm --version
       - run: npm ci
 
