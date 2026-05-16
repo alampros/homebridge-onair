@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.3](https://github.com/alampros/homebridge-onair/compare/homebridge-onair-v0.1.2...homebridge-onair-v0.1.3) (2026-05-16)
+
+
+### Bug Fixes
+
+* set ConfiguredName for occupancy sensors also ([9f9dcf1](https://github.com/alampros/homebridge-onair/commit/9f9dcf1b8f362eb338015044d3f81140305b7a98))
+
 ## [0.1.2](https://github.com/alampros/homebridge-onair/compare/homebridge-onair-v0.1.1...homebridge-onair-v0.1.2) (2026-05-16)
 
 

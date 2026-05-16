@@ -1,7 +1,7 @@
 {
   "name": "homebridge-onair",
   "displayName": "OnAir",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Homebridge plugin for microphone and on-call sensors",
   "license": "MIT",
   "author": "Aaron Lampros <alampros@gmail.com>",
