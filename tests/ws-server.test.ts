@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import WebSocket from 'ws'
+import WebSocket, { type WebSocketServer } from 'ws'
 import type { OnAirPlatform } from '../src/platform.js'
 
 // Mock @homebridge/ciao before importing OnAirServer
@@ -38,7 +38,7 @@ function createMockPlatform(port = 0) {
 }
 
 function getServerPort(server: InstanceType<typeof OnAirServer>): number {
-  const wss = (server as any).wss
+  const wss = (server as unknown as { wss: WebSocketServer | null }).wss
   const addr = wss?.address()
   return typeof addr === 'object' ? addr.port : 0
 }

@@ -1,3 +1,4 @@
+import type { PlatformAccessory } from 'homebridge'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { OccupantAccessory } from '../src/occupant-accessory.js'
 import type { OnAirPlatform } from '../src/platform.js'
@@ -19,7 +20,7 @@ function createMocks(occupantId = 'aaron') {
 
   const mockAccessory = {
     getService: vi.fn().mockReturnValue(infoService),
-    getServiceById: vi.fn((type: string, subtype: string) => {
+    getServiceById: vi.fn((_type: string, _subtype: string): ReturnType<typeof createMockService> | null => {
       // Simulate services not yet existing — force addService path
       return null
     }),
@@ -55,7 +56,7 @@ describe('OccupantAccessory', () => {
   describe('constructor', () => {
     it('sets accessory information characteristics', () => {
       const { mockPlatform, mockAccessory, infoService } = createMocks()
-      new OccupantAccessory(mockPlatform, mockAccessory as any, { id: 'aaron', displayName: 'Aaron' })
+      new OccupantAccessory(mockPlatform, mockAccessory as unknown as PlatformAccessory, { id: 'aaron', displayName: 'Aaron' })
 
       expect(mockAccessory.getService).toHaveBeenCalledWith('AccessoryInformation')
       expect(infoService.setCharacteristic).toHaveBeenCalledWith('Manufacturer', 'homebridge-onair')
@@ -65,7 +66,7 @@ describe('OccupantAccessory', () => {
 
     it('creates on-call service with correct subtype', () => {
       const { mockPlatform, mockAccessory } = createMocks()
-      new OccupantAccessory(mockPlatform, mockAccessory as any, { id: 'aaron', displayName: 'Aaron' })
+      new OccupantAccessory(mockPlatform, mockAccessory as unknown as PlatformAccessory, { id: 'aaron', displayName: 'Aaron' })
 
       expect(mockAccessory.getServiceById).toHaveBeenCalledWith('OccupancySensor', 'oncall-aaron')
       expect(mockAccessory.addService).toHaveBeenCalledWith('OccupancySensor', 'Aaron On Call', 'oncall-aaron')
@@ -73,7 +74,7 @@ describe('OccupantAccessory', () => {
 
     it('creates on-air service with correct subtype', () => {
       const { mockPlatform, mockAccessory } = createMocks()
-      new OccupantAccessory(mockPlatform, mockAccessory as any, { id: 'aaron', displayName: 'Aaron' })
+      new OccupantAccessory(mockPlatform, mockAccessory as unknown as PlatformAccessory, { id: 'aaron', displayName: 'Aaron' })
 
       expect(mockAccessory.getServiceById).toHaveBeenCalledWith('OccupancySensor', 'onair-aaron')
       expect(mockAccessory.addService).toHaveBeenCalledWith('OccupancySensor', 'Aaron On Air', 'onair-aaron')
@@ -90,7 +91,7 @@ describe('OccupantAccessory', () => {
         return null
       })
 
-      new OccupantAccessory(mockPlatform, mockAccessory as any, { id: 'aaron', displayName: 'Aaron' })
+      new OccupantAccessory(mockPlatform, mockAccessory as unknown as PlatformAccessory, { id: 'aaron', displayName: 'Aaron' })
 
       // addService should NOT be called since getServiceById found existing services
       expect(mockAccessory.addService).not.toHaveBeenCalled()
@@ -101,7 +102,7 @@ describe('OccupantAccessory', () => {
 
     it('initializes both sensors to NOT_DETECTED via clearState()', () => {
       const { mockPlatform, mockAccessory, onCallService, onAirService, OccupancyDetected } = createMocks()
-      new OccupantAccessory(mockPlatform, mockAccessory as any, { id: 'aaron', displayName: 'Aaron' })
+      new OccupantAccessory(mockPlatform, mockAccessory as unknown as PlatformAccessory, { id: 'aaron', displayName: 'Aaron' })
 
       // Constructor calls clearState(), setting both to NOT_DETECTED
       expect(onCallService.updateCharacteristic).toHaveBeenCalledWith(OccupancyDetected, OCCUPANCY_NOT_DETECTED)
@@ -114,7 +115,7 @@ describe('OccupantAccessory', () => {
 
       // Should not throw
       expect(() => {
-        new OccupantAccessory(mockPlatform, mockAccessory as any, { id: 'aaron', displayName: 'Aaron' })
+        new OccupantAccessory(mockPlatform, mockAccessory as unknown as PlatformAccessory, { id: 'aaron', displayName: 'Aaron' })
       }).not.toThrow()
     })
   })
@@ -130,7 +131,7 @@ describe('OccupantAccessory', () => {
       onCallService = mocks.onCallService
       onAirService = mocks.onAirService
       OccupancyDetected = mocks.OccupancyDetected
-      accessoryInstance = new OccupantAccessory(mocks.mockPlatform, mocks.mockAccessory as any, { id: 'aaron', displayName: 'Aaron' })
+      accessoryInstance = new OccupantAccessory(mocks.mockPlatform, mocks.mockAccessory as unknown as PlatformAccessory, { id: 'aaron', displayName: 'Aaron' })
 
       // Clear mock call history from constructor
       onCallService.updateCharacteristic.mockClear()
@@ -169,7 +170,7 @@ describe('OccupantAccessory', () => {
   describe('clearState', () => {
     it('sets both sensors to NOT_DETECTED', () => {
       const { mockPlatform, mockAccessory, onCallService, onAirService, OccupancyDetected } = createMocks()
-      const accessoryInstance = new OccupantAccessory(mockPlatform, mockAccessory as any, { id: 'aaron', displayName: 'Aaron' })
+      const accessoryInstance = new OccupantAccessory(mockPlatform, mockAccessory as unknown as PlatformAccessory, { id: 'aaron', displayName: 'Aaron' })
 
       // Set a state first
       onCallService.updateCharacteristic.mockClear()
@@ -185,7 +186,7 @@ describe('OccupantAccessory', () => {
   describe('state transitions', () => {
     it('handles full call lifecycle: idle → on call → muted → unmuted → ended', () => {
       const { mockPlatform, mockAccessory, onCallService, onAirService, OccupancyDetected } = createMocks()
-      const accessoryInstance = new OccupantAccessory(mockPlatform, mockAccessory as any, { id: 'aaron', displayName: 'Aaron' })
+      const accessoryInstance = new OccupantAccessory(mockPlatform, mockAccessory as unknown as PlatformAccessory, { id: 'aaron', displayName: 'Aaron' })
       onCallService.updateCharacteristic.mockClear()
       onAirService.updateCharacteristic.mockClear()
 
