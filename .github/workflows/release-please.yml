@@ -56,6 +56,8 @@ jobs:
       - run: corepack enable
       - run: npm ci
       - run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   publish-dev:
     needs: release-please
@@ -84,3 +86,5 @@ jobs:
           echo "Publishing version: $DEV_VERSION"
 
       - run: npm publish --provenance --access public --tag dev
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
