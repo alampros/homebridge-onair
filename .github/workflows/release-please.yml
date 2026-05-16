@@ -54,10 +54,14 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           package-manager-cache: false
 
-      - name: Activate pinned npm via corepack
+      - name: Activate npm version pinned in package.json
         run: |
-          corepack enable
+          mkdir -p "$RUNNER_TEMP/corepack-shims"
+          corepack enable --install-directory "$RUNNER_TEMP/corepack-shims"
+          echo "$RUNNER_TEMP/corepack-shims" >> "$GITHUB_PATH"
           corepack prepare --activate
+      - run: |
+          which npm
           npm --version
       - run: npm ci
       - run: npm publish --access public
@@ -78,10 +82,14 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           package-manager-cache: false
 
-      - name: Activate pinned npm via corepack
+      - name: Activate npm version pinned in package.json
         run: |
-          corepack enable
+          mkdir -p "$RUNNER_TEMP/corepack-shims"
+          corepack enable --install-directory "$RUNNER_TEMP/corepack-shims"
+          echo "$RUNNER_TEMP/corepack-shims" >> "$GITHUB_PATH"
           corepack prepare --activate
+      - run: |
+          which npm
           npm --version
       - run: npm ci
 
